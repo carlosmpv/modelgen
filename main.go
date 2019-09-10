@@ -96,7 +96,7 @@ func main() {
 		case "float", "real", "numeric":
 			goType = "*float64"
 			break
-		case "date", "time", "timestamp", "timestampz", "interval":
+		case "date", "time", "timestamp", "timestampz", "interval", "timestamp without time zone":
 			goType = "*time.Time"
 			break
 
