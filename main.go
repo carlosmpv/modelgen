@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"strings"
 
 	_ "github.com/lib/pq" // Postgres
 
@@ -80,44 +81,22 @@ func main() {
 
 		var goType string
 		switch res.Type {
-		case "char":
-			fallthrough
-		case "varchar":
-			fallthrough
-		case "text":
-			fallthrough
-		case "character varying":
+		case "char", "varchar", "text", "character varying":
 			goType = "*string"
 			break
-
 		case "smallint":
 			goType = "*int16"
 			break
 		case "int":
 			goType = "*int32"
 			break
-		case "bigint":
-			fallthrough
-		case "integer":
+		case "bigint", "integer":
 			goType = "*int64"
 			break
-		case "float":
-			fallthrough
-		case "real":
-			fallthrough
-		case "numeric":
+		case "float", "real", "numeric":
 			goType = "*float64"
 			break
-
-		case "date":
-			fallthrough
-		case "time":
-			fallthrough
-		case "timestamp":
-			fallthrough
-		case "timestampz":
-			fallthrough
-		case "interval":
+		case "date", "time", "timestamp", "timestampz", "interval":
 			goType = "*time.Time"
 			break
 
@@ -127,7 +106,7 @@ func main() {
 
 		threatedResult := colType{
 			GoType:   goType,
-			GoColumn: strcase.ToCamel(res.Column),
+			GoColumn: strings.Replace(strcase.ToCamel(res.Column), "Id", "ID", 1),
 			Column:   res.Column,
 		}
 
