@@ -106,7 +106,7 @@ func main() {
 
 		threatedResult := colType{
 			GoType:   goType,
-			GoColumn: strings.Replace(strcase.ToCamel(res.Column), "Id", "ID", 1),
+			GoColumn: strings.Replace(strings.Replace(strcase.ToCamel(res.Column), "Id", "ID", 1), "Ip", "IP", 1),
 			Column:   res.Column,
 		}
 
