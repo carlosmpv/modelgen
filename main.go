@@ -81,7 +81,7 @@ func main() {
 
 		var goType string
 		switch res.Type {
-		case "char", "bpchar", "varchar", "text", "character varying":
+		case "char", "bpchar", "character", "varchar", "text", "character varying":
 			goType = "*string"
 			break
 		case "smallint":
