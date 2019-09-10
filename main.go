@@ -99,6 +99,9 @@ func main() {
 		case "date", "time", "timestamp", "timestampz", "interval", "timestamp without time zone":
 			goType = "*time.Time"
 			break
+		case "boolean":
+			goType = "*bool"
+			break
 
 		default:
 			goType = "interface{}"
