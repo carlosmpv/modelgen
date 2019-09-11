@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"path/filepath"
 	"strings"
 
 	_ "github.com/lib/pq" // Postgres
@@ -43,9 +44,9 @@ from information_schema."columns"
 where table_schema = 'public'`
 
 const tmpl string = `
-package models
+package {{ .Package }}
 
-{{ range $k, $v := . }}
+{{ range $k, $v := .Models }}
 // {{ $k }} model automatically generated
 type {{ $k }} struct { {{ range $v }}
     {{ .GoColumn }} {{ .GoType }} ` + "`db:\"{{ .Column }}\" json:\"{{ .Column }}\"`" + `{{ end }}
@@ -122,11 +123,22 @@ func main() {
 		panic(err)
 	}
 
-	file, err := os.Create(path)
-	if err != nil {
-		panic(err)
+	var file *os.File
+	if err := os.Mkdir(path, 0777); os.IsExist(err) || err == nil {
+		file, err = os.Create(filepath.Join(path, "models.go"))
+		if err != nil {
+			panic(err)
+		}
 	}
 	defer file.Close()
 
-	t.Execute(file, registeredTbls)
+	_, packageName := filepath.Split(path)
+
+	t.Execute(file, &struct {
+		Package string
+		Models  map[string][]colType
+	}{
+		Package: packageName,
+		Models:  registeredTbls,
+	})
 }
